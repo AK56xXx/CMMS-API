@@ -17,6 +17,7 @@ import com.cmms.api.entity.User;
 
 import jakarta.security.auth.message.config.AuthConfig;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,9 +39,9 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody User request) {
+	public ResponseEntity<?> login(@RequestBody User request, HttpServletResponse cookiResponse) {
 		try {
-			AuthenticationResponse response = authenticationService.authenticate(request);
+			AuthenticationResponse response = authenticationService.authenticate(request, cookiResponse);
 			return ResponseEntity.ok(response); // Return successful response
 		} catch (AuthenticationException e) {
 			// Handle authentication failure
@@ -49,12 +50,14 @@ public class AuthenticationController {
 		}
 	}
 
-	@GetMapping("/login")
+	@GetMapping("/login_menu")
 	public ResponseEntity<?> login(HttpServletRequest request, HttpServletResponse response) {
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body("redirected to login menu");
 
 	}
+
+
 
 }

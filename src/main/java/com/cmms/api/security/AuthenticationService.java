@@ -10,6 +10,9 @@ import com.cmms.api.exception.user.EmptyFieldException;
 import com.cmms.api.exception.user.UsernameExistException;
 import com.cmms.api.repository.UserRepository;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Service
 public class AuthenticationService {
 
@@ -46,13 +49,13 @@ public class AuthenticationService {
 
 		user = userRepository.save(user);
 
-		String token = jwtService.generateToken(user);
+		// String token = jwtService.generateToken(user);
 
-		return new AuthenticationResponse(token);
+		return new AuthenticationResponse("require login");
 
 	}
 
-	public AuthenticationResponse authenticate(User request) {
+	public AuthenticationResponse authenticate(User request, HttpServletResponse response) {
 
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -61,15 +64,19 @@ public class AuthenticationService {
 
 		User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
 
-		String jwt = jwtService.generateToken(user);
+		String token = jwtService.generateToken(user);
 
-		return new AuthenticationResponse(jwt);
+		// Create a cookie
+		Cookie cookie = new Cookie("accesstoken", token);
+		cookie.setHttpOnly(true); // Make the cookie accessible only by the server
+		cookie.setMaxAge(-1); // Make the cookie expire when the browser session ends
+		cookie.setPath("/"); // Set the cookie path to the root
+		cookie.setValue(token);
+		// Add the cookie to the response
+		response.addCookie(cookie);
 
-	}
+		return new AuthenticationResponse(token);
 
-	// logout
-	public void blacklistToken(String token) {
-		jwtService.addToBlacklist(token);
 	}
 
 }

@@ -51,12 +51,13 @@ public class SecurityConfig {
                                 .authenticated()
 
                 )
-
                 .logout((logout) -> logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/login_menu")
                         .addLogoutHandler(new SecurityContextLogoutHandler()) // Clear authentication context
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
+                        .deleteCookies("accesstoken", "JSESSIONID")
+                        .permitAll()
 
                 )
 

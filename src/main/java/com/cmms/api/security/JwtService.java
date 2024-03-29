@@ -29,9 +29,6 @@ public class JwtService {
 	@Value("${jwt-expiration-milliseconds}")
 	private int EXPIRATION_TIME;
 
-	// JWT blacklist
-	private Set<String> tokenBlacklist = new HashSet<>();
-
 	// using the custom extraction to extract only the username
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
@@ -40,7 +37,7 @@ public class JwtService {
 	// username valid check
 	public boolean isValid(String token, UserDetails user) {
 		String username = extractUsername(token);
-		return username.equals(user.getUsername()) && !isTokenExpired(token) && !isBlacklisted(token);
+		return username.equals(user.getUsername()) && !isTokenExpired(token);
 	}
 
 	// expiration check
@@ -88,16 +85,6 @@ public class JwtService {
 	private SecretKey getSigninKey() {
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
 		return Keys.hmacShaKeyFor(keyBytes);
-	}
-
-	////// BLACKLISTING TOKENS //////
-
-	public void addToBlacklist(String token) {
-		tokenBlacklist.add(token);
-	}
-
-	public boolean isBlacklisted(String token) {
-		return tokenBlacklist.contains(token);
 	}
 
 }
