@@ -1,6 +1,8 @@
 package com.cmms.api.security;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Function;
 
 import javax.crypto.SecretKey;
@@ -19,40 +21,45 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-	//JWT value from application.properties
+	// JWT value from application.properties
 	@Value("${jwt-secret}")
 	private String SECRET_KEY;
 
+	// JWT expiration value from application.properties
+	@Value("${jwt-expiration-milliseconds}")
+	private int EXPIRATION_TIME;
 
-	//using the custom extraction to extract only the username
+	// JWT blacklist
+	private Set<String> tokenBlacklist = new HashSet<>();
+
+	// using the custom extraction to extract only the username
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
 
-	//username valid check
+	// username valid check
 	public boolean isValid(String token, UserDetails user) {
 		String username = extractUsername(token);
-		return username.equals(user.getUsername()) && !isTokenExpired(token);
+		return username.equals(user.getUsername()) && !isTokenExpired(token) && !isBlacklisted(token);
 	}
 
-	//expiration check
+	// expiration check
 	private boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
 
-	//extracting Expiration date from token
+	// extracting Expiration date from token
 	private Date extractExpiration(String token) {
 		return extractClaim(token, Claims::getExpiration);
 	}
 
-	//custom extraction method
+	// custom extraction method
 	public <T> T extractClaim(String token, Function<Claims, T> resolver) {
 		Claims claims = extractAllClaims(token);
 		return resolver.apply(claims);
 	}
 
-
-	//extract all token properties
+	// extract all token properties
 	private Claims extractAllClaims(String token) {
 		return Jwts
 				.parser()
@@ -63,15 +70,13 @@ public class JwtService {
 
 	}
 
-
-
-	//generating token with the secret key
+	// generating token with the secret key (signing key)
 	public String generateToken(User user) {
 		String token = Jwts
 				.builder()
 				.subject(user.getUsername())
 				.issuedAt(new Date(System.currentTimeMillis()))
-				.expiration(new Date(System.currentTimeMillis() + 24*60*60*1000 )) //24h
+				.expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 24h
 				.signWith(getSigninKey())
 				.compact();
 
@@ -79,11 +84,20 @@ public class JwtService {
 
 	}
 
+	// signing key using secret key from application.properties
 	private SecretKey getSigninKey() {
-		// TODO Auto-generated method stub
 		byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
+	////// BLACKLISTING TOKENS //////
+
+	public void addToBlacklist(String token) {
+		tokenBlacklist.add(token);
+	}
+
+	public boolean isBlacklisted(String token) {
+		return tokenBlacklist.contains(token);
+	}
 
 }
