@@ -79,4 +79,21 @@ public class AuthenticationService {
 
 	}
 
+	// AUTHENTICATE REACT NATIVE VERSION //
+
+	public AuthenticationResponse authenticateMobile(User request) {
+
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						request.getUsername(),
+						request.getPassword()));
+
+		User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+
+		String token = jwtService.generateToken(user);
+
+		return new AuthenticationResponse(token);
+
+	}
+
 }

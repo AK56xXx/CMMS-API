@@ -60,4 +60,23 @@ public class AuthenticationController {
 
 
 
+
+
+	
+	// LOGIN REACT NATIVE //
+
+	@PostMapping("/login_rn")
+	public ResponseEntity<?> loginRN(@RequestBody User request) {
+        try {
+            AuthenticationResponse response = authenticationService.authenticateMobile(request);
+            return ResponseEntity.ok(response); // Return successful response
+        } catch (AuthenticationException e) {
+            // Handle authentication failure
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password");
+        }
+    }
+
+
+
 }
