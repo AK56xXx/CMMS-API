@@ -7,6 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -37,6 +41,10 @@ public class User implements UserDetails {
 	@Enumerated(value = EnumType.STRING)
 	@Column(columnDefinition = "ENUM('ADMIN', 'CLIENT', 'TECHNICIAN') DEFAULT 'CLIENT'")
 	private Role role;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
+	List<Maintenance> maintenance;
 
 	public int getId() {
 		return id;

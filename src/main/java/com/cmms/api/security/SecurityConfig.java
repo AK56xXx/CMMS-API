@@ -14,13 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
-
 import com.cmms.api.configuration.CustomAccesDeniedHandler;
-
-import jakarta.servlet.ServletException;
 
 @Configuration
 @EnableWebSecurity

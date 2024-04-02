@@ -14,6 +14,7 @@ public class ServiceUser implements IServiceUser {
 	@Autowired
 	UserRepository userRepository;
 
+	@SuppressWarnings("null")
 	@Override
 	public User createUser(User user) {
 		return userRepository.save(user);
@@ -24,6 +25,7 @@ public class ServiceUser implements IServiceUser {
 		return userRepository.findById(id).get();
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public User updateUser(User user) {
 		return userRepository.save(user);
@@ -34,13 +36,11 @@ public class ServiceUser implements IServiceUser {
 		return userRepository.findAll();
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public void deleteUser(User user) {
 		userRepository.delete(user);
 
 	}
-
-
-
 
 }
