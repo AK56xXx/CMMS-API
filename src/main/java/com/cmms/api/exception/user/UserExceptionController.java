@@ -10,7 +10,7 @@ public class UserExceptionController {
 
     @ExceptionHandler(EmptyFieldException.class)
     public ResponseEntity<Object> handleFilmNotFoundException(EmptyFieldException exception) {
-        return new ResponseEntity<>("Empty username or password", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Empty fields", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UsernameExistException.class)

@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.User;
+import com.cmms.api.exception.user.EmailExistException;
 import com.cmms.api.exception.user.EmptyFieldException;
 import com.cmms.api.exception.user.UsernameExistException;
 import com.cmms.api.repository.UserRepository;
@@ -31,20 +32,21 @@ public class AuthenticationService {
 
 	public AuthenticationResponse register(User request) {
 
-		if (request.getUsername().isBlank() || request.getPassword().isBlank()) {
+		if (request.getUsername().isBlank() || request.getPassword().isBlank() || request.getEmail().isBlank()) {
 			throw new EmptyFieldException();
 		} else if (userRepository.findByUsername(request.getUsername()).isPresent()) {
 			throw new UsernameExistException();
-
+		} else if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+			throw new EmailExistException();
 		}
 
 		User user = new User();
 
 		user.setFname(request.getFname());
 		user.setLname(request.getLname());
-
 		user.setUsername(request.getUsername());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		user.setEmail(request.getEmail());
 		user.setRole(request.getRole());
 
 		user = userRepository.save(user);

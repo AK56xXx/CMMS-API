@@ -1,10 +1,12 @@
 package com.cmms.api.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cmms.api.entity.Role;
 import com.cmms.api.entity.User;
 import com.cmms.api.repository.UserRepository;
 
@@ -41,6 +43,17 @@ public class ServiceUser implements IServiceUser {
 	public void deleteUser(User user) {
 		userRepository.delete(user);
 
+	}
+
+	// find user by technician role
+	@Override
+	public List<User> getAllTechnicians() {
+		return userRepository.findByRole(Role.TECHNICIAN);
+	}
+
+	@Override
+	public List<User> getAllClients() {
+		return userRepository.findByRole(Role.CLIENT);
 	}
 
 }

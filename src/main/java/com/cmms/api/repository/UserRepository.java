@@ -10,9 +10,18 @@ import com.cmms.api.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+	/*
+	 * we use Optional for some fields because we overriding the default methods
+	 * provided by spring security for username and email
+	 */
+
+	// find user by username
 	Optional<User> findByUsername(String username);
 
-	// find user by technician role
-	Optional<User> findByRole(Role role);
+	// find user by email
+	Optional<User> findByEmail(String email);
+
+	// find user by role
+	List<User> findByRole(Role role);
 
 }

@@ -1,12 +1,13 @@
 package com.cmms.api.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.cmms.api.entity.User;
 
 public interface IServiceUser {
 
-	public User createUser(User user);
+    public User createUser(User user);
 
     public User findUserById(int id);
 
@@ -16,5 +17,10 @@ public interface IServiceUser {
 
     public void deleteUser(User user);
 
+    // get list of all technicians
+    public List<User> getAllTechnicians();
+
+    // get list of all clients
+    public List<User> getAllClients();
 
 }
