@@ -1,5 +1,9 @@
 package com.cmms.api.repository;
 
-public interface ModelRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.cmms.api.entity.Model;
+
+public interface ModelRepository extends JpaRepository<Model, Integer> {
 
 }

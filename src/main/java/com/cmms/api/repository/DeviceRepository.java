@@ -1,5 +1,9 @@
 package com.cmms.api.repository;
 
-public interface DeviceRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.cmms.api.entity.Device;
+
+public interface DeviceRepository extends JpaRepository<Device, Integer> {
 
 }

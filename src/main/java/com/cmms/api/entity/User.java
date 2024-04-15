@@ -48,6 +48,18 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)
 	List<Maintenance> maintenance;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+	List<Device> device;
+
+	// feedback is already linked to user without stating this. why?
+	/*
+	 * @JsonIgnore
+	 * 
+	 * @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+	 * List<Feedback> feedback;
+	 */
+
 	public int getId() {
 		return id;
 	}

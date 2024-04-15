@@ -1,5 +1,9 @@
 package com.cmms.api.repository;
 
-public interface FeedbackRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.cmms.api.entity.Feedback;
+
+public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
 
 }
