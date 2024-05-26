@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Device;
+import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.DeviceRepository;
 
 @Service
@@ -21,7 +22,13 @@ public class ServiceDevice implements IServiceDevice {
 
     @Override
     public Device findDeviceById(int id) {
-        return deviceRepository.findById(id).get();
+        return deviceRepository.findById(id).orElseThrow(() -> new NotFoundException());
+
+        // you need exception handler
+        // or it will show 401 status
+        // when not found, in this case
+        // we used a custom exception
+        // to trigger not found
     }
 
     @Override

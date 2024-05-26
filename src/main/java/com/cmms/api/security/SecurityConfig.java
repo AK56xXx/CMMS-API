@@ -23,64 +23,73 @@ import com.cmms.api.configuration.CustomAccesDeniedHandler;
 @EnableMethodSecurity(prePostEnabled = true) // for @PreAuthorize in the controller to work
 public class SecurityConfig {
 
-    private final UserDetailsServiceImp userDetailsServiceImp;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomAccesDeniedHandler customAccesDeniedHandler;
+        private final UserDetailsServiceImp userDetailsServiceImp;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final CustomAccesDeniedHandler customAccesDeniedHandler;
 
-    public SecurityConfig(UserDetailsServiceImp userDetailsServiceImp,
-            JwtAuthenticationFilter jwtAuthenticationFilter, CustomAccesDeniedHandler customAccesDeniedHandler) {
+        public SecurityConfig(UserDetailsServiceImp userDetailsServiceImp,
+                        JwtAuthenticationFilter jwtAuthenticationFilter,
+                        CustomAccesDeniedHandler customAccesDeniedHandler) {
 
-        this.userDetailsServiceImp = userDetailsServiceImp;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.customAccesDeniedHandler = customAccesDeniedHandler;
-    }
+                this.userDetailsServiceImp = userDetailsServiceImp;
+                this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+                this.customAccesDeniedHandler = customAccesDeniedHandler;
+        }
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        req -> req
-                                .requestMatchers("/login/**", "/register/**", "/login_rn", "/swagger-ui/**",
-                                        "/v3/api-docs/**")
-                                .permitAll()
-                                .requestMatchers("/admin_only/**").hasAnyAuthority("ADMIN")
-                                .anyRequest()
-                                .authenticated()
+                return http
+                                .csrf(AbstractHttpConfigurer::disable)
 
-                )
-                .logout((logout) -> logout.logoutUrl("/logout")
-                        .logoutSuccessUrl("/login_menu")
-                        .addLogoutHandler(new SecurityContextLogoutHandler()) // Clear authentication context
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("accesstoken", "JSESSIONID")
-                        .permitAll()
+                                .authorizeHttpRequests(
+                                                req -> req
+                                                                .requestMatchers("/login/**", "/register/**",
+                                                                                "/login_rn", "/swagger-ui/**",
+                                                                                "/v3/api-docs/**", "/errors/**")
+                                                                .permitAll()
+                                                                // .requestMatchers("/admin_only/**")
+                                                                // .hasAnyAuthority("ADMIN")
+                                                                .anyRequest()
+                                                                .authenticated()
 
-                )
+                                )
+                                .logout((logout) -> logout.logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login_menu")
+                                                .addLogoutHandler(new SecurityContextLogoutHandler()) // Clear
+                                                                                                      // authentication
+                                                                                                      // context
+                                                .invalidateHttpSession(true)
+                                                .clearAuthentication(true)
+                                                .deleteCookies("accesstoken", "JSESSIONID")
+                                                .permitAll()
 
-                .userDetailsService(userDetailsServiceImp)
-                .exceptionHandling(
-                        e -> e.accessDeniedHandler(customAccesDeniedHandler)
-                                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                )
 
-                .build();
+                                .userDetailsService(userDetailsServiceImp)
+                                .exceptionHandling(
+                                                e -> e.accessDeniedHandler(customAccesDeniedHandler)
+                                                                .authenticationEntryPoint(new HttpStatusEntryPoint(
+                                                                                HttpStatus.UNAUTHORIZED)))
 
-    }
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+                                .build();
 
-    }
+        }
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+        @Bean
+        PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+
+        }
+
+        @Bean
+        AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
 
 }

@@ -24,32 +24,32 @@ public class RestTicketController {
     IServiceTicket iServiceTicket;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public List<Ticket> findAllTickets() {
         return iServiceTicket.findAllTickets();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public Ticket findTicketById(@PathVariable int id) {
 
         return iServiceTicket.findTicketById(id);
     }
 
-    @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public Ticket AddTicket(@RequestBody Ticket ticket) {
         return iServiceTicket.createTicket(ticket);
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Ticket UpdateTicket(@RequestBody Ticket ticket) {
         return iServiceTicket.updateTicket(ticket);
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public void DeleteTicket(@PathVariable int id) {
         iServiceTicket.deleteTicket(iServiceTicket.findTicketById(id));
     }

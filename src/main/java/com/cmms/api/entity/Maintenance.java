@@ -6,6 +6,8 @@ import java.time.LocalTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.cmms.api.entity.enum_options.MaintenanceType;
 import com.cmms.api.entity.enum_options.Response;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +34,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EntityListeners(AuditingEntityListener.class)
+
 public class Maintenance {
 
     @Id
@@ -39,6 +44,7 @@ public class Maintenance {
     private String title;
     private String description;
     private String notif_msg;
+    private LocalDateTime m_date;
     private LocalDateTime start_at;
     private LocalDateTime end_at;
 
@@ -53,13 +59,15 @@ public class Maintenance {
     private Response user_response;
 
     // maintenance type
+    @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "ENUM('AUTO', 'MANUAL', 'TICKET')")
     private MaintenanceType maintenance_type;
 
     @CreatedDate
-    private LocalDateTime created_at;
+    LocalDateTime created_at;
 
     @LastModifiedDate
-    private LocalDateTime updated_at;
+    LocalDateTime updated_at;
 
     @ManyToOne
     private User technician;

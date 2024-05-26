@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Model;
+import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.ModelRepository;
 
 @Service
@@ -23,7 +24,7 @@ public class ServiceModel implements IServiceModel {
     @Override
     public Model findModelById(int id) {
 
-        return modelRepository.findById(id).get();
+        return modelRepository.findById(id).orElseThrow(() -> new NotFoundException());
     }
 
     @Override

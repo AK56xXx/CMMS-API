@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.User;
 import com.cmms.api.service.IServiceUser;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -23,28 +24,28 @@ public class RestUserController {
 
     // get list of all users
     @GetMapping("")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public List<User> findAllUsers() {
         return iServiceUser.findAllUsers();
     }
 
     // get list of all technicians
     @GetMapping("/technicians")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public List<User> findAllTechnicians() {
         return iServiceUser.getAllTechnicians();
     }
 
     // get list of all clients
     @GetMapping("/clients")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public List<User> findAllClients() {
         return iServiceUser.getAllClients();
     }
 
     // find user by id
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('CLIENT') or hasAuthority('TECHNICIAN')")
+    @PreAuthorize("isAuthenticated()")
     public User findUserById(@PathVariable int id) {
         return iServiceUser.findUserById(id);
     }
@@ -61,14 +62,14 @@ public class RestUserController {
 
     // for updating user
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public User UpdateUser(@RequestBody User user) {
         return iServiceUser.updateUser(user);
     }
 
     // for deleting user
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public void DeleteUser(@PathVariable int id) {
         iServiceUser.deleteUser(iServiceUser.findUserById(id));
     }

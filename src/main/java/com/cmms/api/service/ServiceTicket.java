@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Ticket;
+import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.TicketRepository;
 
 @Service
@@ -23,7 +24,7 @@ public class ServiceTicket implements IServiceTicket {
     @Override
     public Ticket findTicketById(int id) {
 
-        return ticketRepository.findById(id).get();
+        return ticketRepository.findById(id).orElseThrow(() -> new NotFoundException());
     }
 
     @Override

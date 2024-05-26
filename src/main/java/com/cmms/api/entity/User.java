@@ -8,7 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +44,7 @@ public class User implements UserDetails {
 	private String photo;
 	@Enumerated(value = EnumType.STRING)
 	@Column(columnDefinition = "ENUM('ADMIN', 'CLIENT', 'TECHNICIAN') DEFAULT 'CLIENT'")
-	private Role role;
+	private Role role = Role.CLIENT; // we set default role to client like in database or it will trigger error (*)
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "technician", cascade = CascadeType.ALL)

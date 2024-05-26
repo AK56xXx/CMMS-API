@@ -26,32 +26,32 @@ public class RestModelController {
     IServiceModel iServiceModel;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public List<Model> findAllModels() {
         return iServiceModel.findAllModels();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public Model findModelById(@PathVariable int id) {
 
         return iServiceModel.findModelById(id);
     }
 
-    @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public Model AddModel(@RequestBody Model model) {
         return iServiceModel.createModel(model);
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Model UpdateModel(@RequestBody Model model) {
         return iServiceModel.updateModel(model);
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public void DeleteModel(@PathVariable int id) {
         iServiceModel.deleteModel(iServiceModel.findModelById(id));
     }

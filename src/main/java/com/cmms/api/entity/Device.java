@@ -3,11 +3,15 @@ package com.cmms.api.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Device {
 
     @Id
@@ -34,9 +39,11 @@ public class Device {
     private int repair_nbr;
 
     @ManyToOne
+    // @JoinColumn(name = "client_id", referencedColumnName = "id")
     private User client;
 
     @ManyToOne
+    // @JoinColumn(name = "model_id", referencedColumnName = "id")
     private Model model;
 
 }

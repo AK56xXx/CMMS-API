@@ -2,7 +2,8 @@ package com.cmms.api.entity.enum_options;
 
 public enum MaintenanceType {
 
-    PREVENTIVE,
+    AUTO,
+    MANUAL,
     TICKET_BASED
 
 }

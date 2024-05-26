@@ -24,32 +24,32 @@ public class RestProblemController {
     IServiceProblem iServiceProblem;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public List<Problem> findAllProblems() {
         return iServiceProblem.findAllProblems();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public Problem findProblemById(@PathVariable int id) {
 
         return iServiceProblem.findProblemById(id);
     }
 
-    @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public Problem AddProblem(@RequestBody Problem problem) {
         return iServiceProblem.createProblem(problem);
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Problem UpdateProblem(@RequestBody Problem problem) {
         return iServiceProblem.updateProblem(problem);
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public void DeleteProblem(@PathVariable int id) {
         iServiceProblem.deleteProblem(iServiceProblem.findProblemById(id));
     }

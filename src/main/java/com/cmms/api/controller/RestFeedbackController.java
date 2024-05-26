@@ -24,32 +24,32 @@ public class RestFeedbackController {
     IServiceFeedback iServiceFeedback;
 
     @GetMapping("")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public List<Feedback> findAllFeedbacks() {
         return iServiceFeedback.findAllFeedbacks();
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("isAuthenticated()")
     public Feedback findFeedbackById(@PathVariable int id) {
 
         return iServiceFeedback.findFeedbackById(id);
     }
 
-    @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public Feedback AddFeedback(@RequestBody Feedback feedback) {
         return iServiceFeedback.createFeedback(feedback);
     }
 
     @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public Feedback UpdateFeedback(@RequestBody Feedback feedback) {
         return iServiceFeedback.updateFeedback(feedback);
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     public void DeleteFeedback(@PathVariable int id) {
         iServiceFeedback.deleteFeedback(iServiceFeedback.findFeedbackById(id));
     }

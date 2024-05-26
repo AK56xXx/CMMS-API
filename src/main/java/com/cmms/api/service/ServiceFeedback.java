@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Feedback;
+import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.FeedbackRepository;
 
 @Service
@@ -21,7 +22,7 @@ public class ServiceFeedback implements IServiceFeedback {
 
     @Override
     public Feedback findFeedbackById(int id) {
-        return feedbackRepository.findById(id).get();
+        return feedbackRepository.findById(id).orElseThrow(() -> new NotFoundException());
     }
 
     @Override
