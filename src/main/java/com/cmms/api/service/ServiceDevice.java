@@ -15,6 +15,8 @@ public class ServiceDevice implements IServiceDevice {
     @Autowired
     DeviceRepository deviceRepository;
 
+    
+
     @Override
     public Device createDevice(Device device) {
         return deviceRepository.save(device);

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class MaintenanceExceptionController {
 
-    @ExceptionHandler(InvalidDateException.class)
-    public ResponseEntity<Object> handleFilmNotFoundException(InvalidDateException exception) {
-        return new ResponseEntity<>("Invalid date", HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(MaintenanceAlreadyExistsException.class)
+    public ResponseEntity<String> handleMaintenanceAlreadyExistsException(MaintenanceAlreadyExistsException ex) {
+        return new ResponseEntity<>("No EOS devices detected", HttpStatus.NO_CONTENT);
     }
 
 }

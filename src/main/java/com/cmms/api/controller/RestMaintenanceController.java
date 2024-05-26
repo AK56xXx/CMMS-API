@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +26,7 @@ import com.cmms.api.exception.maintenance.InvalidDateException;
 import com.cmms.api.security.AuthenticationResponse;
 import com.cmms.api.service.IServiceMaintenance;
 import com.cmms.api.service.ServiceMaintenance;
+import com.fasterxml.jackson.annotation.JsonMerge;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -54,12 +56,12 @@ public class RestMaintenanceController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addMaintenance(@RequestBody Maintenance maintenance) {
 
-        if (maintenance.getM_date().isAfter(LocalDateTime.now())) {
+        if (maintenance.getMDate().isAfter(LocalDateTime.now())) {
 
-            maintenance.setStart_at(maintenance.getM_date().withHour(9).withMinute(0));
-            maintenance.setEnd_at(maintenance.getStart_at().plusHours(1));
+            maintenance.setStartAt(maintenance.getMDate().withHour(9).withMinute(0));
+            maintenance.setEndAt(maintenance.getStartAt().plusHours(1));
             maintenance.setStatus(Status.IN_PROGRESS);
-            maintenance.setUser_response(Response.APPROVED);
+            maintenance.setUserResponse(Response.APPROVED);
 
             Maintenance createdMaintenance = iServiceMaintenance.createMaintenance(maintenance);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdMaintenance);
@@ -70,6 +72,8 @@ public class RestMaintenanceController {
 
     }
 
+    // the update will set the non-existent json argument to null, is this normal
+    // behaviour ?
     @PutMapping("/update")
     @PreAuthorize("isAuthenticated()")
     public Maintenance UpdateMaintenance(@RequestBody Maintenance maintenance) {
@@ -82,12 +86,30 @@ public class RestMaintenanceController {
         iServiceMaintenance.deleteMaintenance(iServiceMaintenance.findMaintenanceById(id));
     }
 
+    // Adding maintenance notification for expired devices per client
+
+    @PostMapping("/auto-add/{clientId}")
+    @PreAuthorize("isAuthenticated()")
+    public void scheduleMaintenanceForExpiredDevices(@PathVariable int clientId) {
+        iServiceMaintenance.insertMaintenanceForExpiredDevicesByClient(clientId);
+    }
+
+    // List of maintenances for expired devices per client (status = open,
+    // user_response = pending)
+    @GetMapping("/eos-notif/{clientId}")
+    @PreAuthorize("isAuthenticated()")
+    public List<Maintenance> getMaintenancesForExpiredDevices(@PathVariable int clientId) {
+        // return iServiceMaintenance.getMaintenanceForExpiredDevicesByClient(clientId);
+
+        return iServiceMaintenance.getOpenMaintenanceClientPending(clientId);
+    }
+
     /******** ********/
     public boolean verifyDate(Maintenance maintenance) {
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startAt = maintenance.getStart_at();
-        LocalDateTime endAt = maintenance.getEnd_at();
+        LocalDateTime startAt = maintenance.getStartAt();
+        LocalDateTime endAt = maintenance.getEndAt();
         int startHour = startAt.getHour();
         int endHour = endAt.getHour();
 

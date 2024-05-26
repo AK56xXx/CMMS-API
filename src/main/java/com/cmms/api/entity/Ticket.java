@@ -8,6 +8,7 @@ import com.cmms.api.entity.enum_options.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,7 +32,8 @@ public class Ticket {
     private Status status;
 
     @CreatedDate
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @JsonIgnore
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)

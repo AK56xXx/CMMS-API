@@ -16,4 +16,10 @@ public interface IServiceMaintenance {
 
     public void deleteMaintenance(Maintenance maintenance);
 
+    public void insertMaintenanceForExpiredDevicesByClient(int clientId);
+
+    public List<Maintenance> getMaintenanceForExpiredDevicesByClient(int clientId);
+
+    public List<Maintenance> getOpenMaintenanceClientPending(int clientId);
+
 }

@@ -48,7 +48,7 @@ public class RestDeviceController {
     @PreAuthorize("hasAnyAuthority('ADMIN','CLIENT','TECHNICIAN')")
     public ResponseEntity<?> AddDevice(@RequestBody Device device) {
 
-        device.setIp_address("0.0.0.0");
+        device.setIpAddress("0.0.0.0");
 
         Device createDevice = iServiceDevice.createDevice(device);
 

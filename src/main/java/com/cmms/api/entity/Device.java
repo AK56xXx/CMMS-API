@@ -30,10 +30,18 @@ public class Device {
     private String name;
     private String serial;
     private String description;
-    private String ip_address;
-    private String mac_address;
-    private LocalDateTime purchase_date;
-    private LocalDateTime EOS_date; // end of service for major components (exp: purchase_date.plusYears(1))
+
+    @Column(name = "ip_address")
+    private String ipAddress;
+
+    @Column(name = "mac_address")
+    private String macAddress;
+
+    @Column(name = "purchase_date")
+    private LocalDateTime purchaseDate;
+
+    @Column(name = "eos_date")
+    private LocalDateTime EOSDate; // end of service for major components (exp: purchase_date.plusYears(1))
 
     @Column(columnDefinition = "int default 0")
     private int repair_nbr;

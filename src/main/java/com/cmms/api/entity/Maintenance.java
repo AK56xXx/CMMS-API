@@ -43,10 +43,18 @@ public class Maintenance {
     private int id;
     private String title;
     private String description;
-    private String notif_msg;
-    private LocalDateTime m_date;
-    private LocalDateTime start_at;
-    private LocalDateTime end_at;
+
+    @Column(name = "notif_msg")
+    private String notifMsg;
+
+    @Column(name = "m_date")
+    private LocalDateTime mDate;
+
+    @Column(name = "start_at")
+    private LocalDateTime startAt;
+
+    @Column(name = "end_at")
+    private LocalDateTime endAt;
 
     // manitenance status
     @Enumerated(value = EnumType.STRING)
@@ -55,19 +63,21 @@ public class Maintenance {
 
     // user response
     @Enumerated(value = EnumType.STRING)
-    @Column(columnDefinition = "ENUM('PENDING', 'APPROVED', 'REJECTED', 'NONE') DEFAULT 'PENDING'")
-    private Response user_response;
+    @Column(name = "user_response", columnDefinition = "ENUM('PENDING', 'APPROVED', 'REJECTED', 'NONE') DEFAULT 'PENDING'")
+    private Response userResponse;
 
     // maintenance type
     @Enumerated(value = EnumType.STRING)
-    @Column(columnDefinition = "ENUM('AUTO', 'MANUAL', 'TICKET')")
-    private MaintenanceType maintenance_type;
+    @Column(name = "maintenance_type", columnDefinition = "ENUM('AUTO', 'MANUAL', 'TICKET')")
+    private MaintenanceType maintenanceType;
 
     @CreatedDate
-    LocalDateTime created_at;
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
 
     @LastModifiedDate
-    LocalDateTime updated_at;
+    @Column(name = "updated_at")
+    LocalDateTime updatedAt;
 
     @ManyToOne
     private User technician;
