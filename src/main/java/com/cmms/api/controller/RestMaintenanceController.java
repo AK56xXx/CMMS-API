@@ -20,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.Maintenance;
+import com.cmms.api.entity.User;
 import com.cmms.api.entity.enum_options.Response;
 import com.cmms.api.entity.enum_options.Status;
 import com.cmms.api.exception.maintenance.InvalidDateException;
 import com.cmms.api.security.AuthenticationResponse;
 import com.cmms.api.service.IServiceMaintenance;
+import com.cmms.api.service.IServiceUser;
 import com.cmms.api.service.ServiceMaintenance;
 import com.fasterxml.jackson.annotation.JsonMerge;
 
@@ -36,6 +38,9 @@ public class RestMaintenanceController {
 
     @Autowired
     IServiceMaintenance iServiceMaintenance;
+
+    @Autowired
+    IServiceUser iServiceUser;
 
     @GetMapping("")
     @PreAuthorize("isAuthenticated()")
@@ -56,9 +61,9 @@ public class RestMaintenanceController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addMaintenance(@RequestBody Maintenance maintenance) {
 
-        if (maintenance.getMDate().isAfter(LocalDateTime.now())) {
+        if (maintenance.getMdate().isAfter(LocalDateTime.now())) {
 
-            maintenance.setStartAt(maintenance.getMDate().withHour(9).withMinute(0));
+            maintenance.setStartAt(maintenance.getMdate().withHour(9).withMinute(0));
             maintenance.setEndAt(maintenance.getStartAt().plusHours(1));
             maintenance.setStatus(Status.IN_PROGRESS);
             maintenance.setUserResponse(Response.APPROVED);
@@ -102,6 +107,14 @@ public class RestMaintenanceController {
         // return iServiceMaintenance.getMaintenanceForExpiredDevicesByClient(clientId);
 
         return iServiceMaintenance.getOpenMaintenanceClientPending(clientId);
+    }
+
+    @GetMapping("/available-technicians/{mdate}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> availableTechnicians(@PathVariable LocalDateTime mdate) {
+        List<User> availableTechnicians = iServiceUser.getAvailableTechnicians(mdate);
+        return ResponseEntity.ok(availableTechnicians);
+
     }
 
     /******** ********/

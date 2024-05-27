@@ -48,7 +48,7 @@ public class Maintenance {
     private String notifMsg;
 
     @Column(name = "m_date")
-    private LocalDateTime mDate;
+    private LocalDateTime mdate;
 
     @Column(name = "start_at")
     private LocalDateTime startAt;

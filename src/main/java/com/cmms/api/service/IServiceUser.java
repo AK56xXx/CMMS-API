@@ -1,5 +1,7 @@
 package com.cmms.api.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.cmms.api.entity.User;
@@ -21,5 +23,8 @@ public interface IServiceUser {
 
     // get list of all clients
     public List<User> getAllClients();
+
+    // get list of available technicians
+    public List<User> getAvailableTechnicians(LocalDateTime mDate);
 
 }
