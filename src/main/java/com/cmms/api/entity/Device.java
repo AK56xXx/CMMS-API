@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EntityListeners(AuditingEntityListener.class)
 public class Device {
 
     @Id

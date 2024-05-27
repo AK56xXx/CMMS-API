@@ -2,6 +2,7 @@ package com.cmms.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,23 +74,30 @@ public class ServiceMaintenance implements IServiceMaintenance {
         List<Device> expiredDevices = deviceRepository.findByEOSDateBeforeAndClient(now, client);
 
         for (Device device : expiredDevices) {
-            // check if the device already has maintenance or not, if not, create one
-            if (maintenanceRepository.findByDevice(device).isPresent()) {
-                throw new MaintenanceAlreadyExistsException();
+            // Find the existing maintenance or create a new one
+            Optional<Maintenance> existingMaintenanceOpt = maintenanceRepository.findByDevice(device);
 
+            Maintenance maintenance;
+            if (existingMaintenanceOpt.isPresent()) {
+                maintenance = existingMaintenanceOpt.get();
+                // Optionally update some fields if needed
+                maintenance.setStatus(Status.OPEN);
+                maintenance.setUserResponse(Response.PENDING);
+                maintenance.setUpdatedAt(now);
             } else {
-                Maintenance maintenance = new Maintenance();
+                maintenance = new Maintenance();
                 maintenance.setTitle("Maintenance for " + device.getName() + device.getId());
                 maintenance.setDescription("Scheduled maintenance due to EOS date");
                 maintenance.setStatus(Status.OPEN);
                 maintenance.setUserResponse(Response.PENDING);
                 maintenance.setMaintenanceType(MaintenanceType.AUTO);
                 maintenance.setDevice(device);
-
-                maintenanceRepository.save(maintenance);
             }
 
+            maintenanceRepository.save(maintenance);
+
         }
+
     }
 
     // get the maintenance list for expired devices per client

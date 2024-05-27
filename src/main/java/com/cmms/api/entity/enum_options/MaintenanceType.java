@@ -4,6 +4,7 @@ public enum MaintenanceType {
 
     AUTO,
     MANUAL,
-    TICKET_BASED
+    TICKET_BASED,
+    NONE
 
 }
