@@ -61,19 +61,25 @@ public class RestMaintenanceController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addMaintenance(@RequestBody Maintenance maintenance) {
 
-        if (maintenance.getMdate().isAfter(LocalDateTime.now())) {
+        /*
+         * if (maintenance.getMdate().isAfter(LocalDateTime.now())) {
+         * 
+         * maintenance.setStartAt(maintenance.getMdate().withHour(9).withMinute(0));
+         * maintenance.setEndAt(maintenance.getStartAt().plusHours(1));
+         * maintenance.setStatus(Status.IN_PROGRESS);
+         * maintenance.setUserResponse(Response.APPROVED);
+         * 
+         * Maintenance createdMaintenance =
+         * iServiceMaintenance.createMaintenance(maintenance);
+         * return ResponseEntity.status(HttpStatus.CREATED).body(createdMaintenance);
+         * 
+         * }
+         * 
+         * return ResponseEntity.badRequest().body("Invalid date");
+         */
 
-            maintenance.setStartAt(maintenance.getMdate().withHour(9).withMinute(0));
-            maintenance.setEndAt(maintenance.getStartAt().plusHours(1));
-            maintenance.setStatus(Status.IN_PROGRESS);
-            maintenance.setUserResponse(Response.APPROVED);
-
-            Maintenance createdMaintenance = iServiceMaintenance.createMaintenance(maintenance);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdMaintenance);
-
-        }
-
-        return ResponseEntity.badRequest().body("Invalid date");
+        Maintenance newMaintenance = iServiceMaintenance.createMaintenance(maintenance);
+        return ResponseEntity.ok(newMaintenance);
 
     }
 
@@ -117,6 +123,11 @@ public class RestMaintenanceController {
 
     }
 
+
+
+
+
+    
     /******** ********/
     public boolean verifyDate(Maintenance maintenance) {
 

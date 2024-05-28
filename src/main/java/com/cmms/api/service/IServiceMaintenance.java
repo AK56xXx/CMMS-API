@@ -1,8 +1,10 @@
 package com.cmms.api.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.cmms.api.entity.Maintenance;
+import com.cmms.api.entity.User;
 
 public interface IServiceMaintenance {
 
@@ -21,5 +23,11 @@ public interface IServiceMaintenance {
     public List<Maintenance> getMaintenanceForExpiredDevicesByClient(int clientId);
 
     public List<Maintenance> getOpenMaintenanceClientPending(int clientId);
+
+    public List<Maintenance> getMaintenancesByTechnicianAndDate(User technician, LocalDateTime mDate);
+
+    public Maintenance adjustMaintenanceTimes(Maintenance newMaintenance, List<Maintenance> existingMaintenances);
+ 
+
 
 }

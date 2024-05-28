@@ -32,4 +32,5 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     // find technicians that have maintenance date
     List<Maintenance> findByTechnicianAndMdate(User technician, LocalDateTime mDate);
 
+
 }

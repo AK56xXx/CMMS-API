@@ -1,6 +1,8 @@
 package com.cmms.api.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,17 @@ public class ServiceMaintenance implements IServiceMaintenance {
     @SuppressWarnings("null")
     @Override
     public Maintenance createMaintenance(Maintenance maintenance) {
+        // return maintenanceRepository.save(maintenance);
+
+        LocalDateTime mDate = maintenance.getMdate();
+        User technician = maintenance.getTechnician();
+
+        // Fetch existing maintenances for the technician on the same date
+        List<Maintenance> existingMaintenances = getMaintenancesByTechnicianAndDate(technician, mDate);
+
+        // Adjust the maintenance times if needed
+        maintenance = adjustMaintenanceTimes(maintenance, existingMaintenances);
+
         return maintenanceRepository.save(maintenance);
     }
 
@@ -119,6 +132,42 @@ public class ServiceMaintenance implements IServiceMaintenance {
 
         return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClientAndUserResponseAndStatus(
                 now, client, Response.PENDING, Status.OPEN);
+    }
+
+    // get the maintenance list by technician and date
+    @Override
+    public List<Maintenance> getMaintenancesByTechnicianAndDate(User technician, LocalDateTime mDate) {
+
+        return maintenanceRepository.findByTechnicianAndMdate(technician, mDate);
+    }
+
+    // we adjust the time of maintenance if we have multiple maintenance in the same
+    // day by the same thechnician
+    @Override
+    public Maintenance adjustMaintenanceTimes(Maintenance newMaintenance, List<Maintenance> existingMaintenances) {
+        // LocalDateTime startAt = newMaintenance.getStartAt();
+        LocalDateTime startAt = newMaintenance.getMdate().withHour(9).withMinute(0);
+        LocalDateTime endAt = newMaintenance.getEndAt();
+
+        // Check if start_at is after 9 AM
+        // if (startAt.toLocalTime().isAfter(LocalTime.of(9, 0))) {
+        // Find the latest endAt time among the existing maintenances
+        LocalDateTime latestEndAt = existingMaintenances.stream()
+                .map(Maintenance::getEndAt)
+                .max(LocalDateTime::compareTo)
+                .orElse(startAt);
+
+        // Set start_at to latestEndAt + 1 hour
+        startAt = latestEndAt.plusHours(1);
+        // Set end_at to start_at + 1 hour
+        endAt = startAt.plusHours(1);
+
+        newMaintenance.setStartAt(startAt);
+        newMaintenance.setEndAt(endAt);
+        // }
+
+        return newMaintenance;
+
     }
 
 }
