@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.User;
 import com.cmms.api.service.IServiceUser;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/users")

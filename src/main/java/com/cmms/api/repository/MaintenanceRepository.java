@@ -1,6 +1,5 @@
 package com.cmms.api.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -32,5 +31,11 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     // find technicians that have maintenance date
     List<Maintenance> findByTechnicianAndMdate(User technician, LocalDateTime mDate);
 
+    // find maintenaces that are approved by client
+    List<Maintenance> findByClientAndUserResponse(User client, Response response);
+
+    // find maintenances that are approved by client and None client (userResponse)
+    // and status = IN_PROGRESS
+    List<Maintenance> findByUserResponseAndStatus(Response response, Status status);
 
 }

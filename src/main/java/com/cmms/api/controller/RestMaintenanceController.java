@@ -1,17 +1,13 @@
 package com.cmms.api.controller;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,6 +19,7 @@ import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.User;
 import com.cmms.api.entity.enum_options.Response;
 import com.cmms.api.entity.enum_options.Status;
+import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.exception.maintenance.InvalidDateException;
 import com.cmms.api.security.AuthenticationResponse;
 import com.cmms.api.service.IServiceMaintenance;
@@ -31,6 +28,7 @@ import com.cmms.api.service.ServiceMaintenance;
 import com.fasterxml.jackson.annotation.JsonMerge;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/maintenance")
@@ -60,23 +58,6 @@ public class RestMaintenanceController {
     @PutMapping("/add") // I don't know why put works but post doesn't
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addMaintenance(@RequestBody Maintenance maintenance) {
-
-        /*
-         * if (maintenance.getMdate().isAfter(LocalDateTime.now())) {
-         * 
-         * maintenance.setStartAt(maintenance.getMdate().withHour(9).withMinute(0));
-         * maintenance.setEndAt(maintenance.getStartAt().plusHours(1));
-         * maintenance.setStatus(Status.IN_PROGRESS);
-         * maintenance.setUserResponse(Response.APPROVED);
-         * 
-         * Maintenance createdMaintenance =
-         * iServiceMaintenance.createMaintenance(maintenance);
-         * return ResponseEntity.status(HttpStatus.CREATED).body(createdMaintenance);
-         * 
-         * }
-         * 
-         * return ResponseEntity.badRequest().body("Invalid date");
-         */
 
         Maintenance newMaintenance = iServiceMaintenance.createMaintenance(maintenance);
         return ResponseEntity.ok(newMaintenance);
@@ -115,6 +96,7 @@ public class RestMaintenanceController {
         return iServiceMaintenance.getOpenMaintenanceClientPending(clientId);
     }
 
+    // get list of available technicians per date
     @GetMapping("/available-technicians/{mdate}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> availableTechnicians(@PathVariable LocalDateTime mdate) {
@@ -123,25 +105,23 @@ public class RestMaintenanceController {
 
     }
 
+    // List of approved maintenances per client
+    @GetMapping("/approved/client/{clientId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> approvedMaintenances(@PathVariable User clientId) {
+        List<Maintenance> approvedMaintenances = iServiceMaintenance.getApprovedMaintenances(clientId);
+        return ResponseEntity.ok(approvedMaintenances);
 
+    }
 
+    // List of in progress maintenances
+    @GetMapping("/in-progress")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> inProgressMaintenances() {
+        List<Maintenance> inProgressMaintenances = iServiceMaintenance.getInProgressMaintenances();
 
+        return ResponseEntity.ok(inProgressMaintenances);
 
-    
-    /******** ********/
-    public boolean verifyDate(Maintenance maintenance) {
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startAt = maintenance.getStartAt();
-        LocalDateTime endAt = maintenance.getEndAt();
-        int startHour = startAt.getHour();
-        int endHour = endAt.getHour();
-
-        if (startAt.isBefore(now) || endAt.isBefore(startAt) || startHour < 9 || endHour > 18) {
-            return false;
-        }
-
-        return true;
     }
 
 }

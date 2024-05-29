@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.User;
+import com.cmms.api.entity.enum_options.Response;
 
 public interface IServiceMaintenance {
 
@@ -27,7 +28,11 @@ public interface IServiceMaintenance {
     public List<Maintenance> getMaintenancesByTechnicianAndDate(User technician, LocalDateTime mDate);
 
     public Maintenance adjustMaintenanceTimes(Maintenance newMaintenance, List<Maintenance> existingMaintenances);
- 
 
+    // get the maintenance list per client when response = approved
+    public List<Maintenance> getApprovedMaintenances(User client);
+
+    // get the maintenance list when status = in progress
+    public List<Maintenance> getInProgressMaintenances();
 
 }

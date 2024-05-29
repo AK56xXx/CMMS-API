@@ -8,9 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
-import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,7 +50,20 @@ public class User implements UserDetails {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+	List<Maintenance> maintenanceClient;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
 	List<Device> device;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+	List<Ticket> ticket;
+
+	/* */
+	@JsonIgnore
+	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+	List<Feedback> feedback;
 
 	// feedback is already linked to user without stating this. why?
 	/*

@@ -1,13 +1,10 @@
 package com.cmms.api.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.cmms.api.entity.enum_options.MaintenanceType;
 import com.cmms.api.entity.enum_options.Response;
@@ -84,6 +81,9 @@ public class Maintenance {
 
     @ManyToOne
     private Device device;
+
+    @ManyToOne
+    private User client;
 
     @OneToOne
     @JoinColumn(name = "ticket")

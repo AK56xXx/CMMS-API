@@ -1,8 +1,6 @@
 package com.cmms.api.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +9,12 @@ import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Maintenance;
+import com.cmms.api.entity.Role;
 import com.cmms.api.entity.User;
 import com.cmms.api.entity.enum_options.MaintenanceType;
 import com.cmms.api.entity.enum_options.Response;
 import com.cmms.api.entity.enum_options.Status;
 import com.cmms.api.exception.NotFoundException;
-import com.cmms.api.exception.maintenance.MaintenanceAlreadyExistsException;
 import com.cmms.api.repository.DeviceRepository;
 import com.cmms.api.repository.MaintenanceRepository;
 import com.cmms.api.repository.UserRepository;
@@ -33,6 +31,7 @@ public class ServiceMaintenance implements IServiceMaintenance {
     @Autowired
     UserRepository userRepository;
 
+    // using the basic add maintenance for the automated maintenance
     @SuppressWarnings("null")
     @Override
     public Maintenance createMaintenance(Maintenance maintenance) {
@@ -167,6 +166,30 @@ public class ServiceMaintenance implements IServiceMaintenance {
         // }
 
         return newMaintenance;
+
+    }
+
+    // get the maintenance list per client when response = approved
+    @Override
+    public List<Maintenance> getApprovedMaintenances(User client) {
+
+        client = userRepository.findById(client.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid client ID"));
+
+        if (!client.getRole().equals(Role.CLIENT)) {
+            throw new NotFoundException();
+        }
+
+        return maintenanceRepository.findByClientAndUserResponse(client, Response.APPROVED);
+
+    }
+
+    // get the maintenance list where status = in progress and user_response =
+    // approved
+    @Override
+    public List<Maintenance> getInProgressMaintenances() {
+
+        return maintenanceRepository.findByUserResponseAndStatus(Response.APPROVED, Status.IN_PROGRESS);
 
     }
 
