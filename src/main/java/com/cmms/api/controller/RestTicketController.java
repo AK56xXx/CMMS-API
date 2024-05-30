@@ -57,8 +57,15 @@ public class RestTicketController {
     // get all the open tickets per client
     @GetMapping("/client/{clientId}")
     @PreAuthorize("isAuthenticated()")
-    public List<Ticket> findByClientAndStatus(@PathVariable User clientId) {
-        return iServiceTicket.findByClientAndStatus(clientId);
+    public List<Ticket> findTicketByClientAndStatus(@PathVariable User clientId) {
+        return iServiceTicket.getByClientAndStatus(clientId);
+    }
+
+    // get all the open tickets (admin panel view)
+    @GetMapping("/open")
+    @PreAuthorize("isAuthenticated()")
+    public List<Ticket> findAllOpenTickets() {
+        return iServiceTicket.getByStatus();
     }
 
 }

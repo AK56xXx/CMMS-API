@@ -13,8 +13,8 @@ import com.cmms.api.entity.User;
 public interface DeviceRepository extends JpaRepository<Device, Integer> {
 
     // (*) The name of the method need to be the same as in the models attributes
-    // that
-    // we use in the method parameters
-    List<Device> findByEOSDateBeforeAndClient(LocalDateTime date, User client); // select EOS devices
+    // that we use in the method parameters
+    // select EOS devices per client
+    List<Device> findByEOSDateBeforeAndClient(LocalDateTime date, User client);
 
 }

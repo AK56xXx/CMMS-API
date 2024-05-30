@@ -7,6 +7,7 @@ import javax.management.relation.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Ticket;
 import com.cmms.api.entity.User;
 import com.cmms.api.entity.enum_options.Status;
@@ -49,10 +50,18 @@ public class ServiceTicket implements IServiceTicket {
         ticketRepository.delete(ticket);
     }
 
+    // get all the open tickets per client
     @Override
-    public List<Ticket> findByClientAndStatus(User client) {
+    public List<Ticket> getByClientAndStatus(User client) {
 
         return ticketRepository.findByClientAndStatus(client, Status.OPEN);
+    }
+
+    // get all the open tickets (admin panel view)
+    @Override
+    public List<Ticket> getByStatus() {
+
+        return ticketRepository.findByStatus(Status.OPEN);
     }
 
 }
