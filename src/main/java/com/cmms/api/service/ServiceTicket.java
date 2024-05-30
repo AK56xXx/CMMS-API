@@ -2,10 +2,14 @@ package com.cmms.api.service;
 
 import java.util.List;
 
+import javax.management.relation.Role;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Ticket;
+import com.cmms.api.entity.User;
+import com.cmms.api.entity.enum_options.Status;
 import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.TicketRepository;
 
@@ -43,6 +47,12 @@ public class ServiceTicket implements IServiceTicket {
     public void deleteTicket(Ticket ticket) {
 
         ticketRepository.delete(ticket);
+    }
+
+    @Override
+    public List<Ticket> findByClientAndStatus(User client) {
+
+        return ticketRepository.findByClientAndStatus(client, Status.OPEN);
     }
 
 }

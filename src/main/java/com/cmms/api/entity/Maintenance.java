@@ -54,6 +54,7 @@ public class Maintenance {
     private LocalDateTime endAt;
 
     // manitenance status
+    // you need the annotation or the database will not read the enum strings
     @Enumerated(value = EnumType.STRING)
     @Column(columnDefinition = "ENUM('OPEN', 'IN_PROGRESS', 'CLOSED') DEFAULT 'OPEN'")
     private Status status;

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.Ticket;
+import com.cmms.api.entity.User;
 import com.cmms.api.service.IServiceTicket;
 
 @RestController
@@ -51,6 +52,13 @@ public class RestTicketController {
     @PreAuthorize("isAuthenticated()")
     public void DeleteTicket(@PathVariable int id) {
         iServiceTicket.deleteTicket(iServiceTicket.findTicketById(id));
+    }
+
+    // get all the open tickets per client
+    @GetMapping("/client/{clientId}")
+    @PreAuthorize("isAuthenticated()")
+    public List<Ticket> findByClientAndStatus(@PathVariable User clientId) {
+        return iServiceTicket.findByClientAndStatus(clientId);
     }
 
 }

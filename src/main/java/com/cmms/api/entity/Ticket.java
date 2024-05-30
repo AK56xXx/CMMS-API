@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,6 +32,9 @@ public class Ticket {
     private int id;
     private String issue; // (picking from list of problems(entity) api)
     private String other;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "ENUM('OPEN', 'IN_PROGRESS', 'CLOSED') DEFAULT 'OPEN'")
     private Status status;
 
     @ManyToOne
