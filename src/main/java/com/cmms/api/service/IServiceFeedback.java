@@ -3,6 +3,7 @@ package com.cmms.api.service;
 import java.util.List;
 
 import com.cmms.api.entity.Feedback;
+import com.cmms.api.entity.Maintenance;
 
 public interface IServiceFeedback {
 
@@ -15,5 +16,7 @@ public interface IServiceFeedback {
     public List<Feedback> findAllFeedbacks();
 
     public void deleteFeedback(Feedback feedback);
+
+    public Feedback getByMaintenance(Maintenance maintenance);
 
 }

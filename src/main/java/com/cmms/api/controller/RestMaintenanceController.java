@@ -17,18 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.User;
-import com.cmms.api.entity.enum_options.Response;
-import com.cmms.api.entity.enum_options.Status;
-import com.cmms.api.exception.NotFoundException;
-import com.cmms.api.exception.maintenance.InvalidDateException;
-import com.cmms.api.security.AuthenticationResponse;
 import com.cmms.api.service.IServiceMaintenance;
 import com.cmms.api.service.IServiceUser;
-import com.cmms.api.service.ServiceMaintenance;
-import com.fasterxml.jackson.annotation.JsonMerge;
-
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/v1/maintenance")

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Ticket;
 import com.cmms.api.entity.User;
 import com.cmms.api.entity.enum_options.Status;

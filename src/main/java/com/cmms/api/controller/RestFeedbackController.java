@@ -75,4 +75,11 @@ public class RestFeedbackController {
         iServiceFeedback.deleteFeedback(iServiceFeedback.findFeedbackById(id));
     }
 
+    // get the feedback by maintenance id
+    @GetMapping("/maintenance/{maintenanceId}")
+    @PreAuthorize("isAuthenticated()")
+    public Feedback getByMaintenance(@PathVariable Maintenance maintenanceId) {
+        return iServiceFeedback.getByMaintenance(maintenanceId);
+    }
+
 }

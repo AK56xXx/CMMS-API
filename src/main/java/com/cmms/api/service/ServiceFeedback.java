@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Feedback;
+import com.cmms.api.entity.Maintenance;
 import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.FeedbackRepository;
 
@@ -38,6 +39,13 @@ public class ServiceFeedback implements IServiceFeedback {
     @Override
     public void deleteFeedback(Feedback feedback) {
         feedbackRepository.delete(feedback);
+    }
+
+    @Override
+    public Feedback getByMaintenance(Maintenance maintenance) {
+
+        return feedbackRepository.findByMaintenance(maintenance);
+
     }
 
 }

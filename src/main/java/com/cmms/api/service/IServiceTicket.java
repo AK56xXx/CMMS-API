@@ -1,11 +1,8 @@
 package com.cmms.api.service;
 
 import java.util.List;
-
-import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Ticket;
 import com.cmms.api.entity.User;
-import com.cmms.api.entity.enum_options.Status;
 
 public interface IServiceTicket {
 
