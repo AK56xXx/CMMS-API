@@ -38,4 +38,7 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     // and status = IN_PROGRESS
     List<Maintenance> findByUserResponseAndStatus(Response response, Status status);
 
+    // this is will be used by feedback to check if the maintenance status is closed or not
+    
+
 }
