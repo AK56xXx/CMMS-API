@@ -1,6 +1,8 @@
 package com.cmms.api.controller;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.User;
+import com.cmms.api.security.JwtService;
 import com.cmms.api.service.IServiceUser;
 
 @RestController
@@ -20,6 +23,9 @@ public class RestUserController {
 
     @Autowired
     private IServiceUser iServiceUser;
+
+    @Autowired
+    private JwtService jwtService;
 
     // get list of all users
     @GetMapping("")
@@ -47,6 +53,16 @@ public class RestUserController {
     @PreAuthorize("isAuthenticated()")
     public User findUserById(@PathVariable int id) {
         return iServiceUser.findUserById(id);
+    }
+
+    // get user by username via token
+    @GetMapping("/token/{token}")
+    // @PreAuthorize("isAuthenticated()")
+    public Optional<User> findUserByToken(@PathVariable String token) {
+
+        String username = jwtService.extractUsername(token);
+        return iServiceUser.getUserByUsername(username);
+
     }
 
     // for adding user we use register in AuthenticationService

@@ -2,6 +2,7 @@ package com.cmms.api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import com.cmms.api.entity.User;
 
@@ -25,5 +26,7 @@ public interface IServiceUser {
 
     // get list of available technicians
     public List<User> getAvailableTechnicians(LocalDateTime mDate);
+
+    public Optional<User> getUserByUsername(String username);
 
 }
