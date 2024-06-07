@@ -86,30 +86,24 @@ public class ServiceMaintenance implements IServiceMaintenance {
         List<Device> expiredDevices = deviceRepository.findByEOSDateBeforeAndClient(now, client);
 
         for (Device device : expiredDevices) {
-            // Find the existing maintenance or create a new one
-            Optional<Maintenance> existingMaintenanceOpt = maintenanceRepository.findByDevice(device);
+            // Check if there is already a maintenance record for this device
+            boolean exists = maintenanceRepository.existsByDevice(device);
 
-            Maintenance maintenance;
-            if (existingMaintenanceOpt.isPresent()) {
-                maintenance = existingMaintenanceOpt.get();
-                // Optionally update some fields if needed
-                maintenance.setStatus(Status.OPEN);
-                maintenance.setUserResponse(Response.PENDING);
-                maintenance.setUpdatedAt(now);
-            } else {
-                maintenance = new Maintenance();
+            if (!exists) {
+                // Create a new maintenance record if it doesn't exist
+                Maintenance maintenance = new Maintenance();
+                maintenance.setClient(client);
                 maintenance.setTitle("Maintenance for " + device.getName() + device.getId());
                 maintenance.setDescription("Scheduled maintenance due to EOS date");
                 maintenance.setStatus(Status.OPEN);
                 maintenance.setUserResponse(Response.PENDING);
                 maintenance.setMaintenanceType(MaintenanceType.AUTO);
                 maintenance.setDevice(device);
+                maintenanceRepository.save(maintenance);
+
             }
 
-            maintenanceRepository.save(maintenance);
-
         }
-
     }
 
     // get the maintenance list for expired devices per client

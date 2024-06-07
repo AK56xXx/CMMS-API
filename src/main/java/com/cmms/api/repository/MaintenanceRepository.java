@@ -26,7 +26,7 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
             LocalDateTime eosDate, User client, Response userResponse, Status status);
 
     // find devices that have maintenances
-    Optional<Maintenance> findByDevice(Device device);
+    List<Maintenance> findByDevice(Device device);
 
     // find technicians that have maintenance date
     List<Maintenance> findByTechnicianAndMdate(User technician, LocalDateTime mDate);
@@ -38,7 +38,7 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     // and status = IN_PROGRESS
     List<Maintenance> findByUserResponseAndStatus(Response response, Status status);
 
-    // this is will be used by feedback to check if the maintenance status is closed or not
+    boolean existsByDevice(Device device);
     
 
 }
