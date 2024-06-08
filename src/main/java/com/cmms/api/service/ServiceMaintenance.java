@@ -112,7 +112,10 @@ public class ServiceMaintenance implements IServiceMaintenance {
         LocalDateTime now = LocalDateTime.now();
         User client = userRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid client ID"));
-        return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClient(now, client);
+        // return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClient(now,
+        // client);
+        return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClientAndUserResponseAndStatus(now, client,
+                Response.PENDING, Status.OPEN);
     }
 
     // get the maintenance list for expired devices per user when status = open and

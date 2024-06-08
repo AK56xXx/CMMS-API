@@ -7,7 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.cmms.api.security.AuthoritiesDeserializer;
+import com.cmms.api.security.AuthoritiesSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -65,13 +69,12 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
 	List<Feedback> feedback;
 
-	// feedback is already linked to user without stating this. why?
-	/*
-	 * @JsonIgnore
-	 * 
-	 * @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-	 * List<Feedback> feedback;
-	 */
+
+	@JsonSerialize(using = AuthoritiesSerializer.class)
+    @JsonDeserialize(using = AuthoritiesDeserializer.class)
+    private Collection<? extends GrantedAuthority> authorities;
+
+
 
 	public int getId() {
 		return id;
