@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.User;
@@ -87,6 +89,13 @@ public class RestUserController {
     @PreAuthorize("isAuthenticated()")
     public void DeleteUser(@PathVariable int id) {
         iServiceUser.deleteUser(iServiceUser.findUserById(id));
+    }
+
+    @PutMapping("/{userId}/image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<User> updateUserImage(@PathVariable int userId, @RequestParam String imageUrl) {
+        Optional<User> updatedUser = iServiceUser.updateUserImage(userId, imageUrl);
+        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }

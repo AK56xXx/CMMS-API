@@ -1,8 +1,13 @@
 package com.cmms.api.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +42,7 @@ public class ServiceMaintenance implements IServiceMaintenance {
     public Maintenance createMaintenance(Maintenance maintenance) {
         // return maintenanceRepository.save(maintenance);
 
-        LocalDateTime mDate = maintenance.getMdate();
+        LocalDate mDate = maintenance.getMdate().toLocalDate();
         User technician = maintenance.getTechnician();
 
         // Fetch existing maintenances for the technician on the same date
@@ -112,10 +117,9 @@ public class ServiceMaintenance implements IServiceMaintenance {
         LocalDateTime now = LocalDateTime.now();
         User client = userRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid client ID"));
-        // return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClient(now,
-        // client);
-        return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClientAndUserResponseAndStatus(now, client,
-                Response.PENDING, Status.OPEN);
+         return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClient(now, client);
+       // return maintenanceRepository.findByDeviceEOSDateBeforeAndDeviceClientAndUserResponseAndStatus(now, client,
+              //  Response.PENDING, Status.OPEN);
     }
 
     // get the maintenance list for expired devices per user when status = open and
@@ -132,38 +136,50 @@ public class ServiceMaintenance implements IServiceMaintenance {
 
     // get the maintenance list by technician and date
     @Override
-    public List<Maintenance> getMaintenancesByTechnicianAndDate(User technician, LocalDateTime mDate) {
+    public List<Maintenance> getMaintenancesByTechnicianAndDate(User technician, LocalDate mDate) {
 
-        return maintenanceRepository.findByTechnicianAndMdate(technician, mDate);
+        return maintenanceRepository.findByTechnicianAndMsdate(technician, mDate);
     }
 
     // we adjust the time of maintenance if we have multiple maintenance in the same
     // day by the same thechnician
     @Override
     public Maintenance adjustMaintenanceTimes(Maintenance newMaintenance, List<Maintenance> existingMaintenances) {
-        // LocalDateTime startAt = newMaintenance.getStartAt();
-        LocalDateTime startAt = newMaintenance.getMdate().withHour(9).withMinute(0);
-        LocalDateTime endAt = newMaintenance.getEndAt();
+              // Initialize start time at 9:00 AM on the given mdate's date
+            LocalDateTime startAt = newMaintenance.getMdate().withHour(9).withMinute(0);
+            LocalDateTime endAt = startAt.plusHours(1);
+            newMaintenance.setMsdate(newMaintenance.getMdate().toLocalDate());
+            // Fetch all maintenances for the technician on the same mdate
+            List<Maintenance> technicianMaintenances = maintenanceRepository.findByTechnicianAndMsdate(
+                newMaintenance.getTechnician(), newMaintenance.getMsdate());
 
-        // Check if start_at is after 9 AM
-        // if (startAt.toLocalTime().isAfter(LocalTime.of(9, 0))) {
-        // Find the latest endAt time among the existing maintenances
-        LocalDateTime latestEndAt = existingMaintenances.stream()
-                .map(Maintenance::getEndAt)
-                .max(LocalDateTime::compareTo)
-                .orElse(startAt);
+            // Combine existingMaintenances with technicianMaintenances to avoid duplication
+            Set<Maintenance> allRelevantMaintenances = new HashSet<>(existingMaintenances);
+            allRelevantMaintenances.addAll(technicianMaintenances);
 
-        // Set start_at to latestEndAt + 1 hour
-        startAt = latestEndAt.plusHours(1);
-        // Set end_at to start_at + 1 hour
-        endAt = startAt.plusHours(1);
+            // Adjust times if there are conflicts
+            boolean conflict;
+            do {
+                conflict = false;
+                for (Maintenance existing : allRelevantMaintenances) {
+                    LocalDateTime existingStart = existing.getStartAt();
+                    LocalDateTime existingEnd = existing.getEndAt();
 
-        newMaintenance.setStartAt(startAt);
-        newMaintenance.setEndAt(endAt);
-        // }
+                    // If the current startAt overlaps with existing maintenance, adjust the time
+                    if (startAt.isBefore(existingEnd) && endAt.isAfter(existingStart)) {
+                        startAt = existingEnd.plusHours(1);
+                        endAt = startAt.plusHours(1);
+                        conflict = true;
+                        break;
+                    }
+                }
+            } while (conflict);
 
-        return newMaintenance;
+            // Set the adjusted start and end times to the new maintenance
+            newMaintenance.setStartAt(startAt);
+            newMaintenance.setEndAt(endAt);
 
+            return newMaintenance;
     }
 
     // get the maintenance list per client when response = approved

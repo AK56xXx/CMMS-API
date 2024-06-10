@@ -1,10 +1,13 @@
 package com.cmms.api.repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Maintenance;
@@ -39,6 +42,12 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     List<Maintenance> findByUserResponseAndStatus(Response response, Status status);
 
     boolean existsByDevice(Device device);
-    
+
+
+    //(2) msDate LocalDate
+    List<Maintenance> findByTechnicianAndMsdate(User technician, LocalDate msDate);
+
+
+
 
 }

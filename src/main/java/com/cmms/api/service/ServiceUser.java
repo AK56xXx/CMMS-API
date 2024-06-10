@@ -71,35 +71,55 @@ public class ServiceUser implements IServiceUser {
 
 		// Fetch all technicians
 		List<User> allTechnicians = getAllTechnicians();
-
+	
 		for (User technician : allTechnicians) {
 			// Fetch all maintenances for the technician on the given date
-			List<Maintenance> maintenances = maintenanceRepository.findByTechnicianAndMdate(technician, mDate);
-
+			List<Maintenance> maintenances = maintenanceRepository.findByTechnicianAndMsdate(technician, mDate.toLocalDate());
+	
 			boolean isAvailable = true;
-
+			LocalDateTime latestEndAt = null;
+	
 			for (Maintenance maintenance : maintenances) {
-				// Check the time difference between the end of the current maintenance and the
-				// entry datetime of maintenance date
-				if (ChronoUnit.HOURS.between(maintenance.getEndAt(), mDate.plusHours(18)) < 2) { // (?) i think we can
-																									// change it to
-																									// maintenance.getMdate().plusHours(18)
-					isAvailable = false;
-					break;
+				// Determine the latest endAt time for the maintenances on the given date
+				if (latestEndAt == null || maintenance.getEndAt().isAfter(latestEndAt)) {
+					latestEndAt = maintenance.getEndAt();
 				}
 			}
-
+	
+			if (latestEndAt != null) {
+				// Check if the latest endAt is before 17:00
+				if (latestEndAt.isAfter(mDate.withHour(17).withMinute(0))) {
+					isAvailable = false;
+				}
+	
+				// Check the time difference between the end of the latest maintenance and 18:00
+				if (ChronoUnit.HOURS.between(latestEndAt, mDate.withHour(18).withMinute(0)) < 2) {
+					isAvailable = false;
+				}
+			}
+	
 			if (isAvailable) {
 				availableTechnicians.add(technician);
 			}
 		}
-
+	
 		return availableTechnicians;
 	}
 
 	@Override
-	public Optional <User> getUserByUsername(String username) {
+	public Optional<User> getUserByUsername(String username) {
 		return userRepository.findByUsername(username);
+	}
+
+	@Override
+	public Optional<User> updateUserImage(int userId, String imageUrl) {
+		Optional<User> userOptional = userRepository.findById(userId);
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			user.setPhoto(imageUrl);
+			userRepository.save(user);
+		}
+		return userOptional;
 	}
 
 }

@@ -29,4 +29,6 @@ public interface IServiceUser {
 
     public Optional<User> getUserByUsername(String username);
 
+    public Optional<User> updateUserImage(int userId, String imageUrl);
+
 }

@@ -1,9 +1,11 @@
 package com.cmms.api.controller;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -89,8 +91,16 @@ public class RestMaintenanceController {
     // get list of available technicians per date
     @GetMapping("/available-technicians/{mdate}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> availableTechnicians(@PathVariable LocalDateTime mdate) {
-        List<User> availableTechnicians = iServiceUser.getAvailableTechnicians(mdate);
+    public ResponseEntity<?> availableTechnicians(@PathVariable String mdate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z");
+        LocalDateTime localDateTime;
+        try {
+            localDateTime = LocalDateTime.parse(mdate, formatter);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Invalid date format");
+        }
+
+        List<User> availableTechnicians = iServiceUser.getAvailableTechnicians(localDateTime);
         return ResponseEntity.ok(availableTechnicians);
 
     }

@@ -1,5 +1,6 @@
 package com.cmms.api.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -40,6 +41,8 @@ public class Maintenance {
     private int id;
     private String title;
     private String description;
+
+    private LocalDate msdate;
 
     @Column(name = "notif_msg")
     private String notifMsg;
