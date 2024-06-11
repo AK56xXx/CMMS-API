@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cmms.api.entity.Device;
+import com.cmms.api.entity.User;
 import com.cmms.api.exception.NotFoundException;
 import com.cmms.api.repository.DeviceRepository;
 
@@ -46,6 +47,11 @@ public class ServiceDevice implements IServiceDevice {
     @Override
     public void deleteDevice(Device device) {
         deviceRepository.delete(device);
+    }
+
+    @Override
+    public List<Device> getDevicesByClient(User client) {
+        return deviceRepository.findByClient(client);
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Ticket;
 import com.cmms.api.entity.User;
 import com.cmms.api.entity.enum_options.Status;
@@ -59,6 +60,12 @@ public class ServiceTicket implements IServiceTicket {
     public List<Ticket> getByStatus() {
 
         return ticketRepository.findByStatus(Status.OPEN);
+    }
+
+    @Override
+    public List<Ticket> getByDeviceAndStatus(Device device) {
+       
+        return ticketRepository.findByDeviceAndStatus(device, Status.OPEN);
     }
 
 }

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.Device;
+import com.cmms.api.entity.Maintenance;
+import com.cmms.api.entity.User;
 import com.cmms.api.service.IServiceDevice;
 
 @RestController
@@ -62,6 +64,14 @@ public class RestDeviceController {
     @PreAuthorize("isAuthenticated()")
     public void DeleteDevice(@PathVariable int id) {
         iServiceDevice.deleteDevice(iServiceDevice.findDeviceById(id));
+    }
+
+    @GetMapping("/client/{clientId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> approvedMaintenances(@PathVariable User clientId) {
+        List<Device> devices = iServiceDevice.getDevicesByClient(clientId);
+        return ResponseEntity.ok(devices);
+
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Ticket;
 import com.cmms.api.entity.User;
 import com.cmms.api.service.IServiceTicket;
@@ -67,5 +68,12 @@ public class RestTicketController {
     public List<Ticket> findAllOpenTickets() {
         return iServiceTicket.getByStatus();
     }
+
+    @GetMapping("/device/{deviceId}")
+    @PreAuthorize("isAuthenticated()")
+    public List<Ticket> findTicketByClientAndStatus(@PathVariable Device deviceId) {
+        return iServiceTicket.getByDeviceAndStatus(deviceId);
+    }
+
 
 }

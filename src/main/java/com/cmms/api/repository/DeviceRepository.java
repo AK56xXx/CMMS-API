@@ -17,4 +17,6 @@ public interface DeviceRepository extends JpaRepository<Device, Integer> {
     // select EOS devices per client
     List<Device> findByEOSDateBeforeAndClient(LocalDateTime date, User client);
 
+    List<Device> findByClient(User client);
+
 }

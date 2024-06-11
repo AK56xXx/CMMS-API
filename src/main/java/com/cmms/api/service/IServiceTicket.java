@@ -1,6 +1,8 @@
 package com.cmms.api.service;
 
 import java.util.List;
+
+import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Ticket;
 import com.cmms.api.entity.User;
 
@@ -19,5 +21,9 @@ public interface IServiceTicket {
     public List<Ticket> getByClientAndStatus(User client);
 
     public List<Ticket> getByStatus();
+
+    public List<Ticket> getByDeviceAndStatus(Device device);
+
+
 
 }
