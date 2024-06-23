@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,6 +67,17 @@ public class RestUserController {
         return iServiceUser.getUserByUsername(username);
 
     }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/admin")
+    @PreAuthorize("isAuthenticated()")
+    public Optional<User> findUserByUsername(@RequestParam String username) {
+
+        return iServiceUser.getUserByUsername(username);
+
+    }
+
+
 
     // for adding user we use register in AuthenticationService
     /*

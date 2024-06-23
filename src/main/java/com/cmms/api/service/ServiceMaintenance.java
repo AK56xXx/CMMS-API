@@ -2,6 +2,7 @@ package com.cmms.api.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -204,6 +205,28 @@ public class ServiceMaintenance implements IServiceMaintenance {
 
         return maintenanceRepository.findByUserResponseAndStatus(Response.APPROVED, Status.IN_PROGRESS);
 
+    }
+
+    
+
+    @Override
+    public Maintenance addMaintenance(Maintenance maintenance) {
+            // Set the maintenance date
+            LocalDate mDate = maintenance.getMsdate();
+            List<Maintenance> existingMaintenances = getMaintenancesByTechnicianAndDate(maintenance.getTechnician(), mDate);
+            maintenance = adjustMaintenanceTimes(maintenance, existingMaintenances);
+            
+            // Save the maintenance object to the database
+            return maintenanceRepository.save(maintenance);
+    }
+
+    @Override
+    public List<Maintenance> getNoneAndInProgressMaintenances() {
+          // Specify the responses you're interested in
+          List<Response> responses = Arrays.asList(Response.APPROVED, Response.NONE);
+
+          // Call the repository method
+          return maintenanceRepository.findByUserResponseInAndStatus(responses, Status.IN_PROGRESS);
     }
 
 }

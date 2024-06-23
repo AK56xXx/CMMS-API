@@ -69,6 +69,10 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
 	List<Feedback> feedback;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+	List<Announcement> announcement;
+
 
 	@JsonSerialize(using = AuthoritiesSerializer.class)
     @JsonDeserialize(using = AuthoritiesDeserializer.class)

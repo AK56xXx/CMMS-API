@@ -3,6 +3,7 @@ package com.cmms.api.security;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,7 @@ public class AuthenticationController {
 		return ResponseEntity.ok(authenticationService.register(request));
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000") // Adjust origin as needed
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody User request, HttpServletResponse cookiResponse) {
 		try {

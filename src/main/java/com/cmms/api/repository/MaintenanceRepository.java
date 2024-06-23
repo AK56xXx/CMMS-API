@@ -49,5 +49,10 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
 
 
 
+    // New method to support multiple responses
+    List<Maintenance> findByUserResponseInAndStatus(List<Response> userResponses, Status status);
+
+
+
 
 }

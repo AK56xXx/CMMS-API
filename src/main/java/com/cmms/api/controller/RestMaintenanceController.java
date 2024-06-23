@@ -118,9 +118,19 @@ public class RestMaintenanceController {
     @GetMapping("/in-progress")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> inProgressMaintenances() {
-        List<Maintenance> inProgressMaintenances = iServiceMaintenance.getInProgressMaintenances();
+        List<Maintenance> inProgressMaintenances = iServiceMaintenance.getNoneAndInProgressMaintenances();
 
         return ResponseEntity.ok(inProgressMaintenances);
+
+    }
+
+
+    @PostMapping("/create") // I don't know why put works but post doesn't
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> createMaintenance(@RequestBody Maintenance maintenance) {
+
+        Maintenance newMaintenance = iServiceMaintenance.addMaintenance(maintenance);
+        return ResponseEntity.ok(newMaintenance);
 
     }
 

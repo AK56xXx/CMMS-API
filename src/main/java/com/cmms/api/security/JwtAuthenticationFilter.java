@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		// in this case we can't be authorized using the old token after logout (now the
 		// cookie is deleted and the comparison will fail)
 
-		if (token != null && token.equals(getAccessTokenCookieValue(request))) {
+		if (token != null /* && token.equals(getAccessTokenCookieValue(request)) */) {
 
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -73,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	// Get access token value from cookie
-	private String getAccessTokenCookieValue(HttpServletRequest request) {
+	/*private String getAccessTokenCookieValue(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -83,6 +83,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		}
 		return null;
-	}
+	}*/
 
 }

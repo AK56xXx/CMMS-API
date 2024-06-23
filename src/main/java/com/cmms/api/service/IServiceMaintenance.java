@@ -35,4 +35,10 @@ public interface IServiceMaintenance {
     // get the maintenance list when status = in progress
     public List<Maintenance> getInProgressMaintenances();
 
+    //testing add for react js
+    public Maintenance addMaintenance(Maintenance maintenance);
+
+        // get the maintenance list when status = in progress or NONE (for ADMIN)
+        public List<Maintenance> getNoneAndInProgressMaintenances();
+
 }
