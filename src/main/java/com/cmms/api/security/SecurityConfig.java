@@ -51,7 +51,7 @@ public class SecurityConfig {
                         req -> req
                                 .requestMatchers("/login/**", "/register/**",
                                         "/login_rn", "/swagger-ui/**",
-                                        "/v3/api-docs/**", "/errors/**")
+                                        "/v3/api-docs/**", "/errors/**", "/api/v1/images/**")
                                 .permitAll()
                                 .requestMatchers("/app/admin_only/**")
                                 .hasAnyAuthority("ADMIN")
