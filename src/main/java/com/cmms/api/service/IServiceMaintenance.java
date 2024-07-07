@@ -1,9 +1,7 @@
 package com.cmms.api.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-
 import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.User;
 
@@ -38,7 +36,7 @@ public interface IServiceMaintenance {
     //testing add for react js
     public Maintenance addMaintenance(Maintenance maintenance);
 
-        // get the maintenance list when status = in progress or NONE (for ADMIN)
-        public List<Maintenance> getNoneAndInProgressMaintenances();
+    // get the maintenance list when status = in progress or NONE (for ADMIN)
+    public List<Maintenance> getNoneAndInProgressMaintenances();
 
 }

@@ -5,14 +5,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.Role;
@@ -84,17 +79,16 @@ public class ServiceMaintenance implements IServiceMaintenance {
     }
 
     // insert maintenance for expired devices per client (multiple)
-    @Override
     public void insertMaintenanceForExpiredDevicesByClient(int clientId) {
         LocalDateTime now = LocalDateTime.now();
         User client = userRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid client ID"));
         List<Device> expiredDevices = deviceRepository.findByEOSDateBeforeAndClient(now, client);
-
+    
         for (Device device : expiredDevices) {
-            // Check if there is already a maintenance record for this device
-            boolean exists = maintenanceRepository.existsByDevice(device);
-
+            // Check if there is already a maintenance record for this device, client, and type
+            boolean exists = maintenanceRepository.existsByDeviceAndClientAndMaintenanceType(device, client, MaintenanceType.AUTO);
+    
             if (!exists) {
                 // Create a new maintenance record if it doesn't exist
                 Maintenance maintenance = new Maintenance();
@@ -106,9 +100,7 @@ public class ServiceMaintenance implements IServiceMaintenance {
                 maintenance.setMaintenanceType(MaintenanceType.AUTO);
                 maintenance.setDevice(device);
                 maintenanceRepository.save(maintenance);
-
             }
-
         }
     }
 

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmms.api.entity.Device;
-import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.User;
 import com.cmms.api.service.IServiceDevice;
 

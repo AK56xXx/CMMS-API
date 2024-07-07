@@ -3,15 +3,11 @@ package com.cmms.api.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 import com.cmms.api.entity.Device;
 import com.cmms.api.entity.Maintenance;
 import com.cmms.api.entity.User;
+import com.cmms.api.entity.enum_options.MaintenanceType;
 import com.cmms.api.entity.enum_options.Response;
 import com.cmms.api.entity.enum_options.Status;
 
@@ -22,6 +18,8 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Intege
     // this method is used to get the list of maintenances of the EOS devices per
     // user
     List<Maintenance> findByDeviceEOSDateBeforeAndDeviceClient(LocalDateTime date, User client);
+    boolean existsByDeviceAndClientAndMaintenanceType(Device device, User client, MaintenanceType maintenanceType);
+
 
     // find devices that have maintenances with specific status ( status = open,
     // user_response = pending)

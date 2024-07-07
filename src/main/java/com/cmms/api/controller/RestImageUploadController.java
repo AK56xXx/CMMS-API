@@ -18,6 +18,7 @@ public class RestImageUploadController {
     @Autowired
     private Cloudinary cloudinary;
 
+    @SuppressWarnings("rawtypes")
     @PostMapping("/upload")
     public ResponseEntity<Map> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
